@@ -1,0 +1,8 @@
+numpy
+pandas
+matplotlib
+ipykernel
+jinja2
+uvicorn
+fastapi
+
