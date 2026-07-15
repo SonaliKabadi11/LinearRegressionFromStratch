@@ -217,7 +217,6 @@ class LinearRegressionScratch :
             print("RMSE:", rmse_test)
             print("R2:", r2_test)
             print(f"That means the model explains about {r2_test}% of the variance on both test sets.")
-            print(f"The linear regression model appears to be working well. The training and test metrics show strong predictive performance, with high R2 values of approximately {r2_train} and {r2_test} respectively, indicating that the model explains about {(r2_test + r2_train) / 2}% of the variance in both the training and test sets. The low error values for MAE and RMSE also suggest that the predictions are close to the actual target values. Since the test performance is very similar to the training performance, the model does not show strong signs of overfitting")
             plot_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "plots")
             os.makedirs(plot_dir, exist_ok=True)
 
