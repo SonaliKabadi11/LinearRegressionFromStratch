@@ -1,0 +1,86 @@
+<div id="status-panel">
+    <h1>Training Status</h1>
+    <p id="message">{{ message }}</p>
+
+    {% if status == 'completed' and evals_data %}
+    <div id="results">
+        <h4>Train Metrics</h4>
+        <ul>
+            <li>MSE: {{ evals_data['train-metrics']['MSE'] }}</li>
+            <li>MAE: {{ evals_data['train-metrics']['MAE'] }}</li>
+            <li>RMSE: {{ evals_data['train-metrics']['RMSE'] }}</li>
+            <li>R2: {{ evals_data['train-metrics']['R2'] }}</li>
+        </ul>
+
+        <h4>Test Metrics</h4>
+        <ul>
+            <li>MSE: {{ evals_data['test-metrics']['MSE'] }}</li>
+            <li>MAE: {{ evals_data['test-metrics']['MAE'] }}</li>
+            <li>RMSE: {{ evals_data['test-metrics']['RMSE'] }}</li>
+            <li>R2: {{ evals_data['test-metrics']['R2'] }}</li>
+        </ul>
+    </div>
+    {% elif status == 'failed' %}
+    <p>Training could not be completed.</p>
+    {% endif %}
+</div>
+
+<script>
+    const messageEl = document.getElementById('message');
+    const resultsEl = document.getElementById('results');
+
+    function renderResults(data) {
+        if (messageEl) {
+            messageEl.textContent = data.message;
+        }
+
+        if (data.status === 'completed' && data.evals_data) {
+            const panel = document.getElementById('status-panel');
+            let resultsContainer = document.getElementById('results');
+
+            if (!resultsContainer) {
+                resultsContainer = document.createElement('div');
+                resultsContainer.id = 'results';
+                panel.appendChild(resultsContainer);
+            }
+
+            const metrics = data.evals_data;
+            resultsContainer.innerHTML = `
+                <h4>Train Metrics</h4>
+                <ul>
+                    <li>MSE: ${metrics['train-metrics'].MSE}</li>
+                    <li>MAE: ${metrics['train-metrics'].MAE}</li>
+                    <li>RMSE: ${metrics['train-metrics'].RMSE}</li>
+                    <li>R2: ${metrics['train-metrics'].R2}</li>
+                </ul>
+                <h4>Test Metrics</h4>
+                <ul>
+                    <li>MSE: ${metrics['test-metrics'].MSE}</li>
+                    <li>MAE: ${metrics['test-metrics'].MAE}</li>
+                    <li>RMSE: ${metrics['test-metrics'].RMSE}</li>
+                    <li>R2: ${metrics['test-metrics'].R2}</li>
+                </ul>
+            `;
+        } else if (data.status === 'failed') {
+            if (!resultsEl) {
+                const panel = document.getElementById('status-panel');
+                const newResults = document.createElement('div');
+                newResults.id = 'results';
+                panel.appendChild(newResults);
+            }
+            document.getElementById('results').innerHTML = '<p>Training could not be completed.</p>';
+        }
+    }
+
+    const pollStatus = setInterval(() => {
+        fetch('/train-status')
+            .then((response) => response.json())
+            .then((data) => {
+                renderResults(data);
+                if (data.status !== 'training') {
+                    clearInterval(pollStatus);
+                }
+            })
+            .catch(() => {});
+    }, 3000);
+</script>

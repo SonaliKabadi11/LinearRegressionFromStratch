@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from exception import CustomException
-from logger import logging
+from src.exception import CustomException
+from src.logger import logging
 
 
 def read_file():
@@ -20,8 +20,8 @@ def read_file():
     """
     try:
         cwd = os.path.dirname(os.path.abspath(__file__))
-        parent_dir = os.path.dirname(cwd)
-        file_path = os.path.join(parent_dir,cwd, "data", "cleaned-data.csv")
+       
+        file_path = os.path.join(cwd, "data", "cleaned-data.csv")
         
         data = pd.read_csv(file_path)
         if "Unnamed: 0" in data.columns:
@@ -129,6 +129,7 @@ class LinearRegressionScratch :
 
                 if epoch % 50 == 0 or epoch == max_iterations - 1:
                     logging.info(f"Epoch {epoch + 1}: Error {error:.6f}")
+                    print(f"Epoch {epoch + 1}: Error {error:.6f}")
 
                 if prev_error is not None and abs(prev_error - error) < 1e-8:
                     break
@@ -194,10 +195,10 @@ class LinearRegressionScratch :
             r2_test = float(1 - (ss_res_test / ss_tot_test)) if ss_tot_test != 0 else 0.0
 
             logging.info("Training Metrics")
-            logging.info("MSE:", mse_train)
-            logging.info("MAE:", mae_train)
-            logging.info("RMSE:", rmse_train)
-            logging.info("R2:", r2_train)
+            logging.info(f"MSE:{ mse_train}")
+            logging.info(f"MAE: {mae_train}")
+            logging.info(f"RMSE: {rmse_train}")
+            logging.info(f"R2: {r2_train}")
             print("Training Metrics")
             print("MSE:", mse_train)
             print("MAE:", mae_train)
@@ -207,10 +208,10 @@ class LinearRegressionScratch :
 
 
             logging.info("Test Metrics")
-            logging.info("MSE:", mse_test)
-            logging.info("MAE:", mae_test)
-            logging.info("RMSE:", rmse_test)
-            logging.info("R2:", r2_test)
+            logging.info(f"MSE:{ mse_test}")
+            logging.info(f"MAE: {mae_test}")
+            logging.info(f"RMSE: {rmse_test}")
+            logging.info(f"R2: {r2_test}")
             print("Test Metrics")
             print("MSE:", mse_test)
             print("MAE:", mae_test)
@@ -242,6 +243,20 @@ class LinearRegressionScratch :
 
             plt.close()
             logging.info(f"Saved the residual plot")
+            return {
+                "train-metrics" : {
+                    "MSE" : mse_train,
+                    "MAE" : mae_train,
+                    "RMSE" : rmse_train,
+                    "R2" : r2_train
+                },
+                "test-metrics": {
+                    "MSE" : mse_test,
+                    "MAE" : mae_test,
+                    "RMSE" : rmse_test,
+                    "R2" : r2_test
+                }
+            }
         except Exception as e:
             logging.error(e)
             raise CustomException(e, sys)
