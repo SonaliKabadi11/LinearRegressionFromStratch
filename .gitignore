@@ -25,3 +25,5 @@ plots/
 
 # Testing cache
 .pytest_cache/
+
+model_state.pkl

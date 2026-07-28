@@ -6,22 +6,24 @@
     <div id="results">
         <h4>Train Metrics</h4>
         <ul>
-            <li>MSE: {{ evals_data['train-metrics']['MSE'] }}</li>
-            <li>MAE: {{ evals_data['train-metrics']['MAE'] }}</li>
-            <li>RMSE: {{ evals_data['train-metrics']['RMSE'] }}</li>
-            <li>R2: {{ evals_data['train-metrics']['R2'] }}</li>
+            <li>MSE: {{ train_metrics.get('MSE') }}</li>
+            <li>MAE: {{ train_metrics.get('MAE') }}</li>
+            <li>RMSE: {{ train_metrics.get('RMSE') }}</li>
+            <li>R2: {{ train_metrics.get('R2') }}</li>
         </ul>
 
         <h4>Test Metrics</h4>
         <ul>
-            <li>MSE: {{ evals_data['test-metrics']['MSE'] }}</li>
-            <li>MAE: {{ evals_data['test-metrics']['MAE'] }}</li>
-            <li>RMSE: {{ evals_data['test-metrics']['RMSE'] }}</li>
-            <li>R2: {{ evals_data['test-metrics']['R2'] }}</li>
+            <li>MSE: {{ test_metrics.get('MSE') }}</li>
+            <li>MAE: {{ test_metrics.get('MAE') }}</li>
+            <li>RMSE: {{ test_metrics.get('RMSE') }}</li>
+            <li>R2: {{ test_metrics.get('R2') }}</li>
         </ul>
     </div>
     {% elif status == 'failed' %}
     <p>Training could not be completed.</p>
+    {% elif status == 'completed' %}
+    <p>The model is already trained and ready for prediction.</p>
     {% endif %}
 </div>
 

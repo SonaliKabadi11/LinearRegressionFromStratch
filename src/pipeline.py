@@ -26,6 +26,7 @@ def read_file():
         data = pd.read_csv(file_path)
         if "Unnamed: 0" in data.columns:
             data = data.drop(columns=["Unnamed: 0"])
+        
         logging.info("Data is read from the csv file successfully as a DataFrame")
         return data
     except Exception as e:
@@ -127,7 +128,7 @@ class LinearRegressionScratch :
                 error = float(np.mean(residual ** 2))
                 error_history.append(error)
 
-                if epoch % 50 == 0 or epoch == max_iterations - 1:
+                if epoch % 100 == 0 or epoch == max_iterations - 1:
                     logging.info(f"Epoch {epoch + 1}: Error {error:.6f}")
                     print(f"Epoch {epoch + 1}: Error {error:.6f}")
 
@@ -164,8 +165,10 @@ class LinearRegressionScratch :
 
     def predict(self, weights, bias, data):
         try:
+            
             transformed_data = self._transform_data(data)
-            return transformed_data.to_numpy(dtype=float) @ weights + bias
+            return transformed_data.to_numpy(dtype=float)[0] @ weights + bias
+        
         except Exception as e:
             logging.error(e)
             raise CustomException(e, sys)
@@ -218,31 +221,31 @@ class LinearRegressionScratch :
             print("RMSE:", rmse_test)
             print("R2:", r2_test)
             print(f"That means the model explains about {r2_test}% of the variance on both test sets.")
-            plot_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "plots")
-            os.makedirs(plot_dir, exist_ok=True)
+            # plot_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "plots")
+            # os.makedirs(plot_dir, exist_ok=True)
 
-            plt.figure(figsize=(6, 6))
-            plt.scatter(y_train_true, train_predictions, alpha=0.3)
-            plt.plot([y_train_true.min(), y_train_true.max()], [y_train_true.min(), y_train_true.max()], 'r--')
-            plt.xlabel("Actual")
-            plt.ylabel("Predicted")
-            plt.title("Actual vs Predicted (Train)")
-            plt.tight_layout()
-            plt.savefig(os.path.join(plot_dir, "actual_vs_predicted_train.png"))
-            plt.close()
-            logging.info(f"Saved the Actual vs Predicted (Train) plot")
-            residuals = y_train_true - train_predictions
-            plt.figure(figsize=(6, 4))
-            plt.scatter(train_predictions, residuals, alpha=0.3)
-            plt.axhline(0, color='red', linestyle='--')
-            plt.xlabel("Predicted")
-            plt.ylabel("Residual")
-            plt.title("Residual Plot")
-            plt.tight_layout()
-            plt.savefig(os.path.join(plot_dir, "residual_plot.png"))
+            # plt.figure(figsize=(6, 6))
+            # plt.scatter(y_train_true, train_predictions, alpha=0.3)
+            # plt.plot([y_train_true.min(), y_train_true.max()], [y_train_true.min(), y_train_true.max()], 'r--')
+            # plt.xlabel("Actual")
+            # plt.ylabel("Predicted")
+            # plt.title("Actual vs Predicted (Train)")
+            # plt.tight_layout()
+            # plt.savefig(os.path.join(plot_dir, "actual_vs_predicted_train.png"))
+            # plt.close()
+            # logging.info(f"Saved the Actual vs Predicted (Train) plot")
+            # residuals = y_train_true - train_predictions
+            # plt.figure(figsize=(6, 4))
+            # plt.scatter(train_predictions, residuals, alpha=0.3)
+            # plt.axhline(0, color='red', linestyle='--')
+            # plt.xlabel("Predicted")
+            # plt.ylabel("Residual")
+            # plt.title("Residual Plot")
+            # plt.tight_layout()
+            # plt.savefig(os.path.join(plot_dir, "residual_plot.png"))
 
-            plt.close()
-            logging.info(f"Saved the residual plot")
+            # plt.close()
+            # logging.info(f"Saved the residual plot")
             return {
                 "train-metrics" : {
                     "MSE" : mse_train,
@@ -262,12 +265,12 @@ class LinearRegressionScratch :
             raise CustomException(e, sys)
 
 
-if __name__ == "__main__":
-    df = read_file()
-    x_train, y_train, x_test, y_test = split_data(df)
-    print(np.array(x_train[1:2][:]))
-    model = LinearRegressionScratch(x_train, y_train, x_test, y_test)
-    weights, bias = model.train()
-    model.evaluation(weights, bias)
+# if __name__ == "__main__":
+#     df = read_file()
+#     x_train, y_train, x_test, y_test = split_data(df)
+#     print(np.array(x_train[1:2][:]))
+#     model = LinearRegressionScratch(x_train, y_train, x_test, y_test)
+#     weights, bias = model.train()
+    # model.evaluation(weights, bias)
 
 

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Prediction</title>
+</head>
+<body>
+    <h1>Weather Prediction</h1>
+    <p>Enter the feature values below to get a temperature prediction from the trained model.</p>
+
+    <form id="prediction-form">
+        <div>
+            <label for="apparent_temperature">Apparent Temperature (C)</label>
+            <input id="apparent_temperature" name="apparent_temperature" type="number" step="any" required>
+        </div>
+        <div>
+            <label for="humidity">Humidity</label>
+            <input id="humidity" name="humidity" type="number" step="any" required>
+        </div>
+        <div>
+            <label for="wind_speed">Wind Speed (km/h)</label>
+            <input id="wind_speed" name="wind_speed" type="number" step="any" required>
+        </div>
+        <div>
+            <label for="wind_bearing">Wind Bearing (degrees)</label>
+            <input id="wind_bearing" name="wind_bearing" type="number" step="any" required>
+        </div>
+        <div>
+            <label for="visibility">Visibility (km)</label>
+            <input id="visibility" name="visibility" type="number" step="any" required>
+        </div>
+         <div>
+            <label for="loud_cover">Loud Cover</label>
+            <input id="loud_cover" name="loud_cover" type="number" step="any" required>
+        </div>
+        <div>
+            <label for="pressure">Pressure (millibars)</label>
+            <input id="pressure" name="pressure" type="number" step="any" required>
+        </div>
+        <div>
+            <label for="year">Year</label>
+            <input id="year" name="year" type="number" required>
+        </div>
+        <div>
+            <label for="month">Month</label>
+            <input id="month" name="month" type="number" required>
+        </div>
+        <div>
+            <label for="date">Date</label>
+            <input id="date" name="date" type="number" required>
+        </div>
+        <button type="submit">Predict</button>
+    </form>
+
+    <div id="prediction-result" aria-live="polite"></div>
+
+    <script>
+        const form = document.getElementById('prediction-form');
+        const resultEl = document.getElementById('prediction-result');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const payload = Object.fromEntries(formData.entries());
+
+            Object.keys(payload).forEach((key) => {
+                payload[key] = ['year', 'month', 'date'].includes(key)
+                    ? parseInt(payload[key], 10)
+                    : parseFloat(payload[key]);
+            });
+            console.log(payload)
+            resultEl.textContent = 'Predicting...';
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Prediction failed.');
+                }
+
+                resultEl.textContent = `Predicted Temperature: ${data.prediction}`;
+            } catch (error) {
+                resultEl.textContent = error.message;
+            }
+        });
+    </script>
+</body>
+</html>

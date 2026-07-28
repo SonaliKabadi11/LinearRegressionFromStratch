@@ -1,20 +1,20 @@
 import logging
-
 import os
 from datetime import datetime
+from pathlib import Path
 
 
 LOG_FILE = f"{datetime.now().strftime('%m_%d_%Y_%H_%M_%S')}.log"
-parent_dir = os.path.dirname(os.getcwd())
-logs_path = os.path.join(parent_dir, "logs", LOG_FILE)
-os.makedirs(logs_path, exist_ok=True)
+project_root = Path(__file__).resolve().parent.parent
+logs_dir = project_root / "logs"
+logs_dir.mkdir(parents=True, exist_ok=True)
 
-LOG_FILE_PATH = os.path.join(logs_path, LOG_FILE)
+LOG_FILE_PATH = logs_dir / LOG_FILE
 
 logging.basicConfig(
-    filename=LOG_FILE_PATH,
+    filename=str(LOG_FILE_PATH),
     format="[ %(asctime)s ] %(lineno)d %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO
-
+    level=logging.INFO,
+    force=True,
 )
 
