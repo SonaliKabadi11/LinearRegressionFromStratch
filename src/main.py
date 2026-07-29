@@ -6,6 +6,7 @@ import pandas as pd
 from fastapi import BackgroundTasks, FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 from src.models import PredictionRequest, PredictionResponse
 from src.exception import CustomException
@@ -31,6 +32,7 @@ app = FastAPI(
 )
 
 templates = Jinja2Templates(directory="templates")
+app.mount("/plots", StaticFiles(directory="plots"), name="plots")
  
 
 

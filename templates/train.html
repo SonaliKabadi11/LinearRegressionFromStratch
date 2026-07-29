@@ -19,6 +19,9 @@
             <li>RMSE: {{ test_metrics.get('RMSE') }}</li>
             <li>R2: {{ test_metrics.get('R2') }}</li>
         </ul>
+        <img src="/plots/error_history.png" alt="Training error over iterations">
+        <img src="/plots/actual_vs_predicted_train.png" alt="Actual vs predicted">
+        <img src="/plots/residual_plot.png" alt="Residuals">
     </div>
     {% elif status == 'failed' %}
     <p>Training could not be completed.</p>
